@@ -1,0 +1,40 @@
+includes:
+    - phar://phpstan.phar/conf/config.levelmax.neon
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+    - ./vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ./vendor/phpstan/phpstan-phpunit/extension.neon
+    - ./vendor/phpstan/phpstan-phpunit/rules.neon
+    - ./vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - ./vendor/shipmonk/dead-code-detector/rules.neon
+
+parameters:
+    phpVersion:
+        min: 70400
+        max: 80499
+    internalErrorsCountLimit: 1
+    paths:
+        - src
+    tmpDir: cache/phpstan/
+    checkMissingCallableSignature: true
+    checkUninitializedProperties: true
+    checkBenevolentUnionTypes: true
+    checkImplicitMixed: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    reportAnyTypeWideningInVarTag: true
+    reportPossiblyNonexistentConstantArrayOffset: true
+    reportPossiblyNonexistentGeneralArrayOffset: true
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        implicitThrows: false
+        uncheckedExceptionClasses:
+            - LogicException
+
+    editorUrl: 'jetbrains://php-storm/navigate/reference?project=phpstan-dev&path=%%relFile%%:%%line%%' # requires usage of JetBrains Toolbox
+    editorUrlTitle: '%%relFile%%:%%line%%'
+
+    ignoreErrors:
+        # ignore public API methods being detected as unused (this is a library)
+        - identifier: shipmonk.deadMethod
+          message: '~^Unused ShipMonk\\PHPStanDev\\RuleTestCase::~'
