@@ -1,0 +1,26 @@
+<?php declare(strict_types = 1);
+
+namespace ShipMonkTests\PHPStanDev;
+
+use PHPStan\Rules\Rule;
+use ShipMonk\PHPStanDev\RuleTestCase;
+use ShipMonkTests\PHPStanDev\Rule\Data\DisallowDivisionByLiteralZeroRule\DisallowDivisionByLiteralZeroRule;
+
+/**
+ * @extends RuleTestCase<DisallowDivisionByLiteralZeroRule>
+ */
+class RuleTestCaseTest extends RuleTestCase
+{
+
+    protected function getRule(): Rule
+    {
+        return new DisallowDivisionByLiteralZeroRule();
+    }
+
+    public function testRule(): void
+    {
+        $this->analyseFile(__DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/code.php');
+    }
+
+}
+
