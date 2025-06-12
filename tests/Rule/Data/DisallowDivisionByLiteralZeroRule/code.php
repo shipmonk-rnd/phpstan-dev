@@ -12,5 +12,13 @@ function testDivision(): void
 
     $invalidDivision = $a / 0; // error: Division by literal zero is not allowed
     $anotherInvalidDivision = 5 / 0; // error: Division by literal zero is not allowed
-}
 
+    // Test multiple errors on same line - each gets detected separately
+    $multipleErrors = ($a / 0) + (5 / 0); // error: Division by literal zero is not allowed // error: Division by literal zero is not allowed
+
+    // Test three errors on one line
+    $threeErrors = ($a / 0) + (5 / 0) + (10 / 0); // error: Division by literal zero is not allowed // error: Division by literal zero is not allowed // error: Division by literal zero is not allowed
+
+    // Test mixed valid/invalid on same line (should only have one error)
+    $mixedLine = ($a / 2) + (5 / 0); // error: Division by literal zero is not allowed
+}

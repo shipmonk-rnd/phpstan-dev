@@ -22,5 +22,12 @@ class RuleTestCaseTest extends RuleTestCase
         $this->analyseFile(__DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/code.php');
     }
 
-}
+    public function testMultipleErrorsOnSameLine(): void
+    {
+        // Create a dedicated test file for multiple errors demonstration
+        $testFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/multiple-errors.php';
 
+        $this->analyseFile($testFile);
+    }
+
+}

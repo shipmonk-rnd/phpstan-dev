@@ -30,9 +30,9 @@ abstract class RuleTestCase extends OriginalRuleTestCase
     {
         $analyserErrors = $this->gatherAnalyserErrors([$file]);
 
-        if ($autofix === true) {
+        if ($autofix) {
             $this->autofix($file, $analyserErrors);
-            self::fail("File $file was autofixed. This setup should never remain in the codebase.");
+            self::fail("File {$file} was autofixed. This setup should never remain in the codebase.");
         }
 
         $actualErrors = $this->processActualErrors($analyserErrors);
@@ -74,27 +74,18 @@ abstract class RuleTestCase extends OriginalRuleTestCase
         $expectedErrors = [];
 
         foreach ($fileLines as $line => $row) {
-            /** @var array{0: list<string>, 1: list<non-empty-string>} $matches */
-            $matched = preg_match_all('#// error:(.+)#', $row, $matches);
+            $matched = preg_match_all('#// error:(.*?)(?=// error:|$)#', $row, $matches);
 
             if ($matched === false) {
                 throw new LogicException('Error while matching errors');
             }
 
-            if ($matched === 0) {
-                continue;
-            }
-
             foreach ($matches[1] as $error) {
-                $actualLine = $line + 1;
-                $key = sprintf('%04d', $actualLine) . '-' . uniqid();
-                $expectedErrors[$key] = $this->formatErrorForAssert(trim($error), $actualLine);
+                $expectedErrors[] = $this->formatErrorForAssert(trim($error), $line + 1);
             }
         }
 
-        ksort($expectedErrors);
-
-        return array_values($expectedErrors);
+        return $expectedErrors;
     }
 
     private function formatErrorForAssert(string $message, int $line): string
