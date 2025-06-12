@@ -58,7 +58,6 @@ abstract class RuleTestCase extends OriginalRuleTestCase
             $resultToAssert[$key] = $this->formatErrorForAssert($error->getMessage(), $usedLine);
 
             self::assertNotNull($error->getIdentifier(), "Missing error identifier for error: {$error->getMessage()}");
-            self::assertStringStartsWith('shipmonk.', $error->getIdentifier(), "Unexpected error identifier for: {$error->getMessage()}");
         }
 
         ksort($resultToAssert);

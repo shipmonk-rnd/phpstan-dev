@@ -92,7 +92,6 @@ public function testRule(): void
 
 Every error is automatically validated:
 - ✅ Must have an identifier
-- ✅ Identifier must start with `'shipmonk.'`
 - ✅ Errors are matched to specific line numbers
 
 ## Advanced Usage
