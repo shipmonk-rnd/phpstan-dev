@@ -33,6 +33,11 @@
             "ShipMonk\\PHPStanDev\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "ShipMonkTests\\PHPStanDev\\": "tests/"
+        }
+    },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": false,
