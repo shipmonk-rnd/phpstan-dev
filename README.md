@@ -34,14 +34,14 @@ class YourRuleTest extends RuleTestCase
 
     public function testRule(): void
     {
-        $this->analyseFile(__DIR__ . '/data/YourRule/code.php');
+        $this->analyseFile(__DIR__ . '/Data/YourRule/code.php');
     }
 }
 ```
 
 ### 2. Create Test Data File
 
-Create `tests/Rule/data/YourRule/code.php`:
+Create `tests/Rule/Data/YourRule/code.php`:
 
 ```php
 <?php declare(strict_types = 1);
@@ -82,7 +82,7 @@ During development, automatically generate error comments:
 public function testRule(): void
 {
     // Set to true temporarily to generate error comments
-    $this->analyseFile(__DIR__ . '/data/code.php', autofix: true);
+    $this->analyseFile(__DIR__ . '/Data/code.php', autofix: true);
 }
 ```
 
@@ -110,13 +110,13 @@ class ComplexRuleTest extends RuleTestCase
 
     public function testDefault(): void
     {
-        $this->analyseFile(__DIR__ . '/data/ComplexRule/default.php');
+        $this->analyseFile(__DIR__ . '/Data/ComplexRule/default.php');
     }
 
     public function testStrict(): void
     {
         $this->strictMode = true;
-        $this->analyseFile(__DIR__ . '/data/ComplexRule/strict.php');
+        $this->analyseFile(__DIR__ . '/Data/ComplexRule/strict.php');
     }
 }
 ```
@@ -127,13 +127,13 @@ class ComplexRuleTest extends RuleTestCase
 public function testPhp82Features(): void
 {
     $this->phpVersion = $this->createPhpVersion(80_200);
-    $this->analyseFile(__DIR__ . '/data/Rule/php82-features.php');
+    $this->analyseFile(__DIR__ . '/Data/Rule/php82-features.php');
 }
 ```
 
 ### Custom PHPStan Configuration
 
-Create `tests/Rule/data/YourRule/config.neon`:
+Create `tests/Rule/Data/YourRule/config.neon`:
 
 ```neon
 parameters:
@@ -147,7 +147,7 @@ public static function getAdditionalConfigFiles(): array
 {
     return array_merge(
         parent::getAdditionalConfigFiles(),
-        [__DIR__ . '/data/YourRule/config.neon'],
+        [__DIR__ . '/Data/YourRule/config.neon'],
     );
 }
 ```
@@ -171,104 +171,13 @@ tests/
 ├── Rule/
 │   ├── YourRuleTest.php
 │   ├── AnotherRuleTest.php
-│   └── data/
+│   └── Data/
 │       ├── YourRule/
 │       │   ├── code.php           # Main test file
 │       │   ├── edge-cases.php     # Additional scenarios
 │       │   └── config.neon        # Optional PHPStan config
 │       └── AnotherRule/
 │           └── code.php
-```
-
-## Common Patterns
-
-### Testing Different Error Scenarios
-
-```php
-<?php
-
-// Valid usage - no error comment
-$valid = getValue();
-
-// Invalid usage with expected error
-$invalid = badFunction(); // error: Function badFunction() is not allowed
-
-// Multiple errors on same line
-$a = bad1(); $b = bad2(); // error: Function bad1() is not allowed // error: Function bad2() is not allowed
-```
-
-### Testing Complex Error Messages
-
-```php
-<?php
-
-function test($param) {
-    // Error with variable content
-    return $param + null; // error: Null value involved in binary operation: int + null
-
-    // Error with specific types
-    $array['key'] = $value; // error: Unsafe array key access, key type: mixed
-}
-```
-
-## Error Comment Rules
-
-1. **Format**: `// error: <message>`
-2. **Placement**: At the end of the line that should trigger the error
-3. **Multiple errors**: Use separate comments: `// error: First // error: Second`
-4. **No error expected**: Don't add any comment
-5. **Exact matching**: Error message must match exactly (whitespace sensitive)
-
-## Development Workflow
-
-### 1. Write the Rule
-
-```php
-class YourRule implements Rule
-{
-    public function getNodeType(): string
-    {
-        return Node\Expr\FuncCall::class;
-    }
-
-    public function processNode(Node $node, Scope $scope): array
-    {
-        // Your rule logic
-        return [
-            RuleErrorBuilder::message('Error message')
-                ->identifier('shipmonk.yourRule.errorType')
-                ->build(),
-        ];
-    }
-}
-```
-
-### 2. Create Test with Autofix
-
-```php
-public function testRule(): void
-{
-    $this->analyseFile(__DIR__ . '/data/code.php', autofix: true);
-}
-```
-
-### 3. Run Test to Generate Comments
-
-```bash
-vendor/bin/phpunit tests/Rule/YourRuleTest.php
-```
-
-### 4. Review Generated Comments
-
-Check the test data file - error comments will be automatically added.
-
-### 5. Remove Autofix and Commit
-
-```php
-public function testRule(): void
-{
-    $this->analyseFile(__DIR__ . '/data/code.php'); // autofix: true removed
-}
 ```
 
 ## Development
@@ -291,12 +200,6 @@ composer check:collisions  # Check for name collisions
 # Fix coding standards
 composer fix:cs
 ```
-
-## Requirements
-
-- PHP 7.4 or higher
-- PHPStan 2.1.8 or higher
-- PHPUnit 9.6.22 or higher (for testing)
 
 ## License
 
