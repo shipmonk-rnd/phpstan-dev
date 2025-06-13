@@ -14,6 +14,9 @@ parameters:
     internalErrorsCountLimit: 1
     paths:
         - src
+        - tests
+    excludePaths:
+        - tests/Rule/Data/**
     tmpDir: cache/phpstan/
     checkMissingCallableSignature: true
     checkUninitializedProperties: true
@@ -33,8 +36,3 @@ parameters:
 
     editorUrl: 'jetbrains://php-storm/navigate/reference?project=phpstan-dev&path=%%relFile%%:%%line%%' # requires usage of JetBrains Toolbox
     editorUrlTitle: '%%relFile%%:%%line%%'
-
-    ignoreErrors:
-        # ignore public API methods being detected as unused (this is a library)
-        - identifier: shipmonk.deadMethod
-          message: '~^Unused ShipMonk\\PHPStanDev\\RuleTestCase::~'
