@@ -6,6 +6,7 @@ use LogicException;
 use PHPStan\Analyser\Error;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase as OriginalRuleTestCase;
+use function array_filter;
 use function array_values;
 use function explode;
 use function file_get_contents;
@@ -15,6 +16,7 @@ use function ksort;
 use function preg_match;
 use function preg_match_all;
 use function preg_replace;
+use function sort;
 use function sprintf;
 use function trim;
 use function uniqid;
@@ -26,22 +28,36 @@ use function uniqid;
 abstract class RuleTestCase extends OriginalRuleTestCase
 {
 
-    protected function analyseFile(string $file, bool $autofix = false): void
+    /**
+     * @param list<string> $files
+     */
+    protected function analyzeFiles(array $files, bool $autofix = false): void
     {
-        $analyserErrors = $this->gatherAnalyserErrors([$file]);
+        sort($files);
+
+        $analyserErrors = $this->gatherAnalyserErrors($files);
 
         if ($autofix) {
-            $this->autofix($file, $analyserErrors);
-            self::fail("File {$file} was autofixed. This setup should never remain in the codebase.");
+            foreach ($files as $file) {
+                $fileErrors = array_filter($analyserErrors, static fn(Error $error): bool => $error->getFile() === $file);
+                $this->autofix($file, array_values($fileErrors));
+            }
+
+            $filesStr = implode(', ', $files);
+            self::fail("Files {$filesStr} were autofixed. This setup should never remain in the codebase.");
         }
 
-        $actualErrors = $this->processActualErrors($analyserErrors);
-        $expectedErrors = $this->parseExpectedErrors($file);
+        foreach ($files as $file) {
+            $fileErrors = array_filter($analyserErrors, static fn(Error $error): bool => $error->getFile() === $file);
+            $actualErrors = $this->processActualErrors(array_values($fileErrors));
+            $expectedErrors = $this->parseExpectedErrors($file);
 
-        self::assertSame(
-            implode("\n", $expectedErrors) . "\n",
-            implode("\n", $actualErrors) . "\n",
-        );
+            self::assertSame(
+                implode("\n", $expectedErrors) . "\n",
+                implode("\n", $actualErrors) . "\n",
+                "Errors in file {$file} do not match",
+            );
+        }
     }
 
     /**

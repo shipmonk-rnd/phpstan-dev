@@ -34,7 +34,7 @@ class YourRuleTest extends RuleTestCase
 
     public function testRule(): void
     {
-        $this->analyseFile(__DIR__ . '/Data/YourRule/code.php');
+        $this->analyzeFiles([__DIR__ . '/Data/YourRule/code.php']);
     }
 }
 ```
@@ -82,7 +82,7 @@ During development, automatically generate error comments:
 public function testRule(): void
 {
     // Set to true temporarily to generate error comments
-    $this->analyseFile(__DIR__ . '/Data/code.php', autofix: true);
+    $this->analyzeFiles([__DIR__ . '/Data/code.php'], autofix: true);
 }
 ```
 
@@ -110,13 +110,13 @@ class ComplexRuleTest extends RuleTestCase
 
     public function testDefault(): void
     {
-        $this->analyseFile(__DIR__ . '/Data/ComplexRule/default.php');
+        $this->analyzeFiles([__DIR__ . '/Data/ComplexRule/default.php']);
     }
 
     public function testStrict(): void
     {
         $this->strictMode = true;
-        $this->analyseFile(__DIR__ . '/Data/ComplexRule/strict.php');
+        $this->analyzeFiles([__DIR__ . '/Data/ComplexRule/strict.php']);
     }
 }
 ```
@@ -127,7 +127,7 @@ class ComplexRuleTest extends RuleTestCase
 public function testPhp82Features(): void
 {
     $this->phpVersion = $this->createPhpVersion(80_200);
-    $this->analyseFile(__DIR__ . '/Data/Rule/php82-features.php');
+    $this->analyzeFiles([__DIR__ . '/Data/Rule/php82-features.php']);
 }
 ```
 

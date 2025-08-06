@@ -19,7 +19,7 @@ class RuleTestCaseTest extends RuleTestCase
 
     public function testRule(): void
     {
-        $this->analyseFile(__DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/code.php');
+        $this->analyzeFiles([__DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/code.php']);
     }
 
     public function testMultipleErrorsOnSameLine(): void
@@ -27,7 +27,7 @@ class RuleTestCaseTest extends RuleTestCase
         // Create a dedicated test file for multiple errors demonstration
         $testFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/multiple-errors.php';
 
-        $this->analyseFile($testFile);
+        $this->analyzeFiles([$testFile]);
     }
 
 }
