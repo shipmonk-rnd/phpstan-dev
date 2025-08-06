@@ -1,0 +1,69 @@
+{
+    "name": "shipmonk/phpstan-dev",
+    "description": "Development utilities for PHPStan rules testing, extracted from shipmonk/phpstan-rules",
+    "license": [
+        "MIT"
+    ],
+    "type": "library",
+    "keywords": [
+        "phpstan",
+        "testing",
+        "static analysis"
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "phpstan/phpstan": "^2.1.8"
+    },
+    "require-dev": {
+        "editorconfig-checker/editorconfig-checker": "^10.6.0",
+        "ergebnis/composer-normalize": "^2.45.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0.1",
+        "phpstan/phpstan-phpunit": "^2.0.4",
+        "phpstan/phpstan-strict-rules": "^2.0.3",
+        "phpunit/phpunit": "^9.6.22",
+        "shipmonk/composer-dependency-analyser": "^1.8.1",
+        "shipmonk/dead-code-detector": "^0.9.0",
+        "shipmonk/name-collision-detector": "^2.1.1",
+        "slevomat/coding-standard": "^8.16.0"
+    },
+    "suggest": {
+        "phpunit/phpunit": "^9.6.22 for running tests that use RuleTestCase"
+    },
+    "autoload": {
+        "psr-4": {
+            "ShipMonk\\PHPStanDev\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShipMonkTests\\PHPStanDev\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false,
+            "ergebnis/composer-normalize": true
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "check": [
+            "@check:composer",
+            "@check:ec",
+            "@check:cs",
+            "@check:types",
+            "@check:dependencies",
+            "@check:collisions"
+        ],
+        "check:collisions": "detect-collisions src",
+        "check:composer": [
+            "composer normalize --dry-run --no-check-lock --no-update-lock",
+            "composer validate --strict"
+        ],
+        "check:cs": "phpcs",
+        "check:dependencies": "composer-dependency-analyser",
+        "check:ec": "ec src",
+        "check:types": "phpstan analyse -vv --ansi",
+        "fix:cs": "phpcbf"
+    }
+}
