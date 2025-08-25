@@ -39,7 +39,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
 
         if ($autofix) {
             foreach ($files as $file) {
-                $fileErrors = array_filter($analyserErrors, static fn(Error $error): bool => $error->getFile() === $file);
+                $fileErrors = array_filter($analyserErrors, static fn(Error $error): bool => $error->getFilePath() === $file);
                 $this->autofix($file, array_values($fileErrors));
             }
 
@@ -48,7 +48,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
         }
 
         foreach ($files as $file) {
-            $fileErrors = array_filter($analyserErrors, static fn(Error $error): bool => $error->getFile() === $file);
+            $fileErrors = array_filter($analyserErrors, static fn(Error $error): bool => $error->getFilePath() === $file);
             $actualErrors = $this->processActualErrors(array_values($fileErrors));
             $expectedErrors = $this->parseExpectedErrors($file);
 
