@@ -7,6 +7,7 @@ use PHPStan\Analyser\Error;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase as OriginalRuleTestCase;
 use function array_filter;
+use function array_map;
 use function array_values;
 use function explode;
 use function file_get_contents;
@@ -18,8 +19,10 @@ use function preg_match_all;
 use function preg_replace;
 use function sort;
 use function sprintf;
+use function str_replace;
 use function trim;
 use function uniqid;
+use const DIRECTORY_SEPARATOR;
 
 /**
  * @template TRule of Rule
@@ -34,6 +37,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
     protected function analyzeFiles(array $files, bool $autofix = false): void
     {
         sort($files);
+        $files = array_map(static fn(string $file): string => str_replace('/', DIRECTORY_SEPARATOR, $file), $files);
 
         $analyserErrors = $this->gatherAnalyserErrors($files);
 
