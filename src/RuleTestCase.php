@@ -34,16 +34,19 @@ abstract class RuleTestCase extends OriginalRuleTestCase
     /**
      * @param list<string> $files
      */
-    protected function analyzeFiles(array $files, bool $autofix = false): void
+    protected function analyzeFiles(
+        array $files,
+        bool $autofix = false
+    ): void
     {
         sort($files);
-        $files = array_map(static fn(string $file): string => str_replace('/', DIRECTORY_SEPARATOR, $file), $files);
+        $files = array_map(static fn (string $file): string => str_replace('/', DIRECTORY_SEPARATOR, $file), $files);
 
         $analyserErrors = $this->gatherAnalyserErrors($files);
 
         if ($autofix) {
             foreach ($files as $file) {
-                $fileErrors = array_filter($analyserErrors, static fn(Error $error): bool => $error->getFilePath() === $file);
+                $fileErrors = array_filter($analyserErrors, static fn (Error $error): bool => $error->getFilePath() === $file);
                 $this->autofix($file, array_values($fileErrors));
             }
 
@@ -52,7 +55,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
         }
 
         foreach ($files as $file) {
-            $fileErrors = array_filter($analyserErrors, static fn(Error $error): bool => $error->getFilePath() === $file);
+            $fileErrors = array_filter($analyserErrors, static fn (Error $error): bool => $error->getFilePath() === $file);
             $actualErrors = $this->processActualErrors(array_values($fileErrors));
             $expectedErrors = $this->parseExpectedErrors($file);
 
@@ -108,7 +111,10 @@ abstract class RuleTestCase extends OriginalRuleTestCase
         return $expectedErrors;
     }
 
-    private function formatErrorForAssert(string $message, int $line): string
+    private function formatErrorForAssert(
+        string $message,
+        int $line
+    ): string
     {
         return sprintf('%02d: %s', $line, $message);
     }
@@ -116,7 +122,10 @@ abstract class RuleTestCase extends OriginalRuleTestCase
     /**
      * @param list<Error> $analyserErrors
      */
-    private function autofix(string $file, array $analyserErrors): void
+    private function autofix(
+        string $file,
+        array $analyserErrors
+    ): void
     {
         $errorsByLines = [];
 
