@@ -5,6 +5,7 @@ on:
         branches:
             - "master"
             - "v[0-9]"
+    workflow_dispatch:
 jobs:
     checks:
         runs-on: ${{ matrix.os }}
@@ -16,7 +17,7 @@ jobs:
         steps:
             -
                 name: Checkout code
-                uses: actions/checkout@v4
+                uses: actions/checkout@v6
             -
                 name: Setup PHP
                 uses: shivammathur/setup-php@v2
