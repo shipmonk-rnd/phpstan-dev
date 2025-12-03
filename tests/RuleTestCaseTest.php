@@ -3,6 +3,7 @@
 namespace ShipMonkTests\PHPStanDev;
 
 use PHPStan\Rules\Rule;
+use PHPUnit\Framework\AssertionFailedError;
 use ShipMonk\PHPStanDev\RuleTestCase;
 use ShipMonkTests\PHPStanDev\Rule\Data\DisallowDivisionByLiteralZeroRule\DisallowDivisionByLiteralZeroRule;
 
@@ -33,6 +34,23 @@ class RuleTestCaseTest extends RuleTestCase
         $testFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/multiple-errors.php';
 
         $this->analyzeFiles([$testFile]);
+    }
+
+    public function testAutofix(): void
+    {
+        $expectedFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/autofix.expected.php';
+        $testFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/autofix.php';
+        $tmpFile = sys_get_temp_dir() . '/autofix.php';
+        copy($testFile, $tmpFile);
+
+        try {
+            $this->analyzeFiles([$tmpFile], true);
+            self::fail('Autofix should have thrown an exception');
+        } catch (AssertionFailedError $e) { // @phpstan-ignore catch.internalClass
+            self::assertStringContainsString('autofixed', $e->getMessage());
+        }
+
+        self::assertFileEquals($expectedFile, $tmpFile);
     }
 
 }

@@ -136,24 +136,30 @@ abstract class RuleTestCase extends OriginalRuleTestCase
                 throw new LogicException('Error without line number: ' . $analyserError->getMessage());
             }
 
-            $errorsByLines[$line] = $analyserError;
+            $errorsByLines[$line][] = $analyserError;
         }
 
         $fileLines = $this->getFileLines($file);
 
         foreach ($fileLines as $line => &$row) {
-            if (!isset($errorsByLines[$line + 1])) {
-                continue;
-            }
+            $errorCommentPattern = '~ ?// error:.*$~';
 
-            $errorCommentPattern = '~ ?//.*$~';
-            $errorMessage = $errorsByLines[$line + 1]->getMessage();
-            $errorComment = ' // error: ' . $errorMessage;
+            if (isset($errorsByLines[$line + 1])) {
+                // Line has errors - add or update error comments
+                $errorComments = '';
 
-            if (preg_match($errorCommentPattern, $row) === 1) {
-                $row = preg_replace($errorCommentPattern, $errorComment, $row);
-            } else {
-                $row .= $errorComment;
+                foreach ($errorsByLines[$line + 1] as $error) {
+                    $errorComments .= ' // error: ' . $error->getMessage();
+                }
+
+                if (preg_match($errorCommentPattern, $row) === 1) {
+                    $row = preg_replace($errorCommentPattern, $errorComments, $row);
+                } else {
+                    $row .= $errorComments;
+                }
+            } elseif (preg_match($errorCommentPattern, $row) === 1) {
+                // Line has no error but has an error comment - remove it
+                $row = preg_replace($errorCommentPattern, '', $row);
             }
         }
 
