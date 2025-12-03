@@ -9,6 +9,7 @@ use PHPStan\Testing\RuleTestCase as OriginalRuleTestCase;
 use function array_filter;
 use function array_map;
 use function array_values;
+use function count;
 use function explode;
 use function file_get_contents;
 use function file_put_contents;
@@ -50,8 +51,10 @@ abstract class RuleTestCase extends OriginalRuleTestCase
                 $this->autofix($file, array_values($fileErrors));
             }
 
+            $plural = count($files) > 1 ? 's' : '';
+            $were = count($files) > 1 ? 'were' : 'was';
             $filesStr = implode(', ', $files);
-            self::fail("Files {$filesStr} were autofixed. This setup should never remain in the codebase.");
+            self::fail("File{$plural} {$filesStr} {$were} autofixed. This setup should never remain in the codebase.");
         }
 
         foreach ($files as $file) {
