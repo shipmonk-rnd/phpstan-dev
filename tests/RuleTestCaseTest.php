@@ -53,29 +53,27 @@ class RuleTestCaseTest extends RuleTestCase
         self::assertFileEquals($expectedFile, $tmpFile);
     }
 
-    public function testErrorMessageWithExtraError(): void
+    public function testErrorMessageFormat(): void
     {
-        $testFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/extra-error.php';
+        $testFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/error-message.php';
 
         try {
             $this->analyzeFiles([$testFile]);
-            self::fail('Expected assertion to fail due to extra error');
+            self::fail('Expected assertion to fail');
         } catch (AssertionFailedError $e) { // @phpstan-ignore catch.internalClass
-            self::assertStringContainsString('New errors reported:', $e->getMessage());
-            self::assertStringContainsString('Division by literal zero is not allowed', $e->getMessage());
-        }
-    }
+            $expectedMessage = <<<MSG
+                Errors in file {$testFile} do not match:
 
-    public function testErrorMessageWithMissingError(): void
-    {
-        $testFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/missing-error.php';
+                New errors reported:
+                08: Division by literal zero is not allowed
 
-        try {
-            $this->analyzeFiles([$testFile]);
-            self::fail('Expected assertion to fail due to missing error');
-        } catch (AssertionFailedError $e) { // @phpstan-ignore catch.internalClass
-            self::assertStringContainsString('Errors not reported:', $e->getMessage());
-            self::assertStringContainsString('Division by literal zero is not allowed', $e->getMessage());
+                Errors not reported:
+                08: This error should not be reported
+                09: Division by literal zero is not allowed
+
+
+                MSG;
+            self::assertStringContainsString($expectedMessage, $e->getMessage());
         }
     }
 
