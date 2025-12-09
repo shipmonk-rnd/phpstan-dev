@@ -53,4 +53,28 @@ class RuleTestCaseTest extends RuleTestCase
         self::assertFileEquals($expectedFile, $tmpFile);
     }
 
+    public function testErrorMessageFormat(): void
+    {
+        $testFile = str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/error-message.php');
+
+        try {
+            $this->analyzeFiles([$testFile]);
+            self::fail('Expected assertion to fail');
+        } catch (AssertionFailedError $e) { // @phpstan-ignore catch.internalClass
+            $expectedMessage = <<<MSG
+                Errors in file {$testFile} do not match:
+
+                New errors reported:
+                08: Division by literal zero is not allowed
+
+                Errors not reported:
+                08: This error should not be reported
+                09: Division by literal zero is not allowed
+
+
+                MSG;
+            self::assertStringContainsString($expectedMessage, $e->getMessage());
+        }
+    }
+
 }

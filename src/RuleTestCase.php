@@ -14,6 +14,7 @@ use function explode;
 use function file_get_contents;
 use function file_put_contents;
 use function implode;
+use function in_array;
 use function ksort;
 use function preg_match;
 use function preg_match_all;
@@ -62,10 +63,15 @@ abstract class RuleTestCase extends OriginalRuleTestCase
             $actualErrors = $this->processActualErrors(array_values($fileErrors));
             $expectedErrors = $this->parseExpectedErrors($file);
 
+            $extraErrors = array_filter($actualErrors, static fn (string $error): bool => !in_array($error, $expectedErrors, true));
+            $missingErrors = array_filter($expectedErrors, static fn (string $error): bool => !in_array($error, $actualErrors, true));
+
             self::assertSame(
                 implode("\n", $expectedErrors) . "\n",
                 implode("\n", $actualErrors) . "\n",
-                "Errors in file {$file} do not match",
+                "Errors in file {$file} do not match:\n\n" .
+                ($extraErrors === [] ? '' : "New errors reported:\n" . implode("\n", $extraErrors) . "\n\n") .
+                ($missingErrors === [] ? '' : "Errors not reported:\n" . implode("\n", $missingErrors) . "\n\n"),
             );
         }
     }
