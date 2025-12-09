@@ -55,7 +55,7 @@ class RuleTestCaseTest extends RuleTestCase
 
     public function testErrorMessageFormat(): void
     {
-        $testFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/error-message.php';
+        $testFile = str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/error-message.php');
 
         try {
             $this->analyzeFiles([$testFile]);
