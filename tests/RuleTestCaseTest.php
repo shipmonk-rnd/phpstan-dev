@@ -53,4 +53,30 @@ class RuleTestCaseTest extends RuleTestCase
         self::assertFileEquals($expectedFile, $tmpFile);
     }
 
+    public function testErrorMessageWithExtraError(): void
+    {
+        $testFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/extra-error.php';
+
+        try {
+            $this->analyzeFiles([$testFile]);
+            self::fail('Expected assertion to fail due to extra error');
+        } catch (AssertionFailedError $e) { // @phpstan-ignore catch.internalClass
+            self::assertStringContainsString('New errors reported:', $e->getMessage());
+            self::assertStringContainsString('Division by literal zero is not allowed', $e->getMessage());
+        }
+    }
+
+    public function testErrorMessageWithMissingError(): void
+    {
+        $testFile = __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/missing-error.php';
+
+        try {
+            $this->analyzeFiles([$testFile]);
+            self::fail('Expected assertion to fail due to missing error');
+        } catch (AssertionFailedError $e) { // @phpstan-ignore catch.internalClass
+            self::assertStringContainsString('Errors not reported:', $e->getMessage());
+            self::assertStringContainsString('Division by literal zero is not allowed', $e->getMessage());
+        }
+    }
+
 }
