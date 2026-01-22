@@ -25,7 +25,10 @@ class RuleTestCaseTest extends RuleTestCase
 
     public function testTrait(): void
     {
-        $this->analyzeFiles([__DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/trait.php']);
+        $this->analyzeFiles([
+            __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/trait.php',
+            __DIR__ . '/Rule/Data/DisallowDivisionByLiteralZeroRule/trait-user.php',
+        ]);
     }
 
     public function testMultipleErrorsOnSameLine(): void
