@@ -10,6 +10,3 @@ trait MyTrait
     }
 }
 
-class TraitUser {
-    use MyTrait;
-}

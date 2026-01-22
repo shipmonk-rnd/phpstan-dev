@@ -22,6 +22,7 @@ use function preg_replace;
 use function sort;
 use function sprintf;
 use function str_replace;
+use function strpos;
 use function trim;
 use function uniqid;
 use const DIRECTORY_SEPARATOR;
@@ -48,7 +49,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
 
         if ($autofix) {
             foreach ($files as $file) {
-                $fileErrors = array_filter($analyserErrors, static fn (Error $error): bool => $error->getFilePath() === $file);
+                $fileErrors = array_filter($analyserErrors, static fn (Error $error): bool => strpos($error->getFile(), $file) === 0);
                 $this->autofix($file, array_values($fileErrors));
             }
 
@@ -59,7 +60,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
         }
 
         foreach ($files as $file) {
-            $fileErrors = array_filter($analyserErrors, static fn (Error $error): bool => $error->getFilePath() === $file);
+            $fileErrors = array_filter($analyserErrors, static fn (Error $error): bool => strpos($error->getFile(), $file) === 0);
             $actualErrors = $this->processActualErrors(array_values($fileErrors));
             $expectedErrors = $this->parseExpectedErrors($file);
 
