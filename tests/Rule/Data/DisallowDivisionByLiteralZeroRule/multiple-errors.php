@@ -17,5 +17,9 @@ function testMultipleErrorsPerLine(): void
 
     // Mixed valid and invalid operations (only invalid ones should error)
     $mixed = ($a / 2) + (5 / 0) + ($a / 3) + (10 / 0); // error: Division by literal zero is not allowed // error: Division by literal zero is not allowed
+
+    // Order does not matter
+    (1 / 0) + (5 / 0.); // error: Division by float zero is not allowed // error: Division by literal zero is not allowed
+    (1 / 0) + (5 / 0.); // error: Division by literal zero is not allowed // error: Division by float zero is not allowed
 }
 
