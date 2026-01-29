@@ -4,6 +4,7 @@ namespace ShipMonkTests\PHPStanDev\Rule\Data\DisallowDivisionByLiteralZeroRule;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Div;
+use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\Int_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
@@ -26,6 +27,14 @@ class DisallowDivisionByLiteralZeroRule implements Rule
             return [
                 RuleErrorBuilder::message('Division by literal zero is not allowed')
                     ->identifier('shipmonk.divisionByZero')
+                    ->build(),
+            ];
+        }
+
+        if ($node->right instanceof Float_ && $node->right->value === 0.) {
+            return [
+                RuleErrorBuilder::message('Division by float zero is not allowed')
+                    ->identifier('shipmonk.divisionByFloatZero')
                     ->build(),
             ];
         }

@@ -64,6 +64,9 @@ abstract class RuleTestCase extends OriginalRuleTestCase
             $actualErrors = $this->processActualErrors(array_values($fileErrors));
             $expectedErrors = $this->parseExpectedErrors($file);
 
+            sort($actualErrors);
+            sort($expectedErrors);
+
             $extraErrors = array_filter($actualErrors, static fn (string $error): bool => !in_array($error, $expectedErrors, true));
             $missingErrors = array_filter($expectedErrors, static fn (string $error): bool => !in_array($error, $actualErrors, true));
 
