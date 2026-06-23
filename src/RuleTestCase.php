@@ -22,7 +22,7 @@ use function preg_replace;
 use function sort;
 use function sprintf;
 use function str_replace;
-use function strpos;
+use function str_starts_with;
 use function trim;
 use function uniqid;
 use const DIRECTORY_SEPARATOR;
@@ -39,7 +39,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
      */
     protected function analyzeFiles(
         array $files,
-        bool $autofix = false
+        bool $autofix = false,
     ): void
     {
         sort($files);
@@ -49,7 +49,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
 
         if ($autofix) {
             foreach ($files as $file) {
-                $fileErrors = array_filter($analyserErrors, static fn (Error $error): bool => strpos($error->getFile(), $file) === 0);
+                $fileErrors = array_filter($analyserErrors, static fn (Error $error): bool => str_starts_with($error->getFile(), $file));
                 $this->autofix($file, array_values($fileErrors));
             }
 
@@ -60,7 +60,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
         }
 
         foreach ($files as $file) {
-            $fileErrors = array_filter($analyserErrors, static fn (Error $error): bool => strpos($error->getFile(), $file) === 0);
+            $fileErrors = array_filter($analyserErrors, static fn (Error $error): bool => str_starts_with($error->getFile(), $file));
             $actualErrors = $this->processActualErrors(array_values($fileErrors));
             $expectedErrors = $this->parseExpectedErrors($file);
 
@@ -126,7 +126,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
 
     private function formatErrorForAssert(
         string $message,
-        int $line
+        int $line,
     ): string
     {
         return sprintf('%02d: %s', $line, $message);
@@ -137,7 +137,7 @@ abstract class RuleTestCase extends OriginalRuleTestCase
      */
     private function autofix(
         string $file,
-        array $analyserErrors
+        array $analyserErrors,
     ): void
     {
         $errorsByLines = [];
