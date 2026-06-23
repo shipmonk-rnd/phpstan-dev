@@ -9,8 +9,8 @@ includes:
 
 parameters:
     phpVersion:
-        min: 70400
-        max: 80499
+        min: 80100
+        max: 80599
     internalErrorsCountLimit: 1
     paths:
         - src
