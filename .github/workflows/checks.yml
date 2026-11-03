@@ -13,7 +13,7 @@ jobs:
             fail-fast: false
             matrix:
                 os: [ubuntu-latest, windows-latest]
-                php-version: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+                php-version: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5', '8.6']
         steps:
             -
                 name: Checkout code
@@ -23,6 +23,10 @@ jobs:
                 uses: shivammathur/setup-php@v2
                 with:
                     php-version: ${{ matrix.php-version }}
+            -
+                name: Resolve dependencies as on PHP 8.5 (not all of them allow PHP 8.6 yet)
+                if: matrix.php-version == '8.6'
+                run: composer config --global platform.php 8.5.99
             -
                 name: Install dependencies
                 run: composer install --no-progress --prefer-dist --no-interaction
